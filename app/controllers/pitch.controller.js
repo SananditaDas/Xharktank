@@ -1,17 +1,6 @@
 const PitchModel = require('../models/pitch.model.js');
-
-// // Create and Save a new Pitch
-// exports.createPitch = async (req, res) => {
-//     try {
-//         const response = await PitchService.createPitch(req.body);
-//         console.log(response);
-//         res.status(201).send(response);
-//     } catch (err) {
-//         res.status(err.code).send(err.message);
-//     }
-    
-// };
-
+const { TimestampComparator } = require('../utils/comparators');
+const { TimestampPrune } = require('../utils/prune');
 
 exports.createPitch = (req, res) => {
     
@@ -45,11 +34,15 @@ exports.createPitch = (req, res) => {
     });
 };
 
+
+
 // Retrieve and return all pitchs from the database.
 exports.getAllPitches = (req, res) => {
     PitchModel.find()
-    .then(pitches => {
-        res.send(pitches);
+        .then(pitches => {
+            pitches.sort(TimestampComparator);
+            _pitches=pitches.map((pitch) => TimestampPrune(pitch));
+            res.send(_pitches);
     }).catch(err => {
         res.status(500).send({
             message: err.message || "Some error occurred while retrieving pitches."
@@ -66,7 +59,7 @@ exports.getOnePitch = (req, res) => {
                 message: "Pitch not found with id " + req.params.pitchId
             });            
         }
-        res.status(200).send(pitch);
+        res.status(200).send(TimestampPrune(pitch));
     }).catch(err => {
         if(err.kind === 'ObjectId') {
             return res.status(404).send({
@@ -78,13 +71,3 @@ exports.getOnePitch = (req, res) => {
         });
     });
 };
-
-// // Update a pitch identified by the pitchId in the request
-// exports.update = (req, res) => {
-
-// };
-
-// // Delete a pitch with the specified pitchId in the request
-// exports.delete = (req, res) => {
-
-// };

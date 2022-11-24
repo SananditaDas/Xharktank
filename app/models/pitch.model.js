@@ -26,6 +26,8 @@ const PitchSchema = mongoose.Schema({
         required: true
     },
     offers: [Offer]
+}, {
+    timestamps: true
 });
 
 PitchSchema.set('toJSON', {

@@ -24,9 +24,9 @@ const connectionParams={
 // Connecting to the database
 mongoose.connect(DB_URL, connectionParams)
     .then(() => {
-        console.log("Successfully connected to the database");    
+        console.log("Successfully connected to the database : "+DB_URL);    
     }).catch(err => {
-        console.log('Could not connect to the database. Exiting now...', err);
+        console.log('Could not connect to the database : '+DB_URL+"\n"+ err);
         process.exit();
     });
 

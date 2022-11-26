@@ -36,17 +36,17 @@ exports.findOne = (pitchId) => {
         PitchModel.findById(pitchId)
         .then(pitch => {
             if (!pitch) {
-                error = { errorCode: 404, errorMessage: "Pitch not found with id " + req.params.pitchId };
+                error = { errorCode: 404, errorMessage: "Pitch not found with id " + pitchId };
                 reject(error);         
             }
             resolve(pitch);
         }).catch(err => {
             if (err.kind === 'ObjectId') {
-                error = { errorCode: 404, errorMessage: "Pitch not found with id " + req.params.pitchId };
+                error = { errorCode: 404, errorMessage: "Pitch not found with id " + pitchId };
                 reject(error); 
             }
             else {
-                error = { errorCode: 500, errorMessage: "Error retrieving pitch with id " + req.params.pitchId };
+                error = { errorCode: 500, errorMessage: "Error retrieving pitch with id " + pitchId };
                 reject(error);  
             }
         });

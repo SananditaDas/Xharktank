@@ -1,17 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = require("mongoose");
 
-// const OfferSchema = mongoose.Schema({
-//     investor: String,
-//     amount: Number,
-//     equity: Number,
-//     comment: String
-// }, {
-//     timestamps: true
-// });
-
-// module.exports = mongoose.model('Offer', OfferSchema);
-
 const OfferSchema = new Schema({
     investor: {
         type: String,
@@ -41,4 +30,5 @@ OfferSchema.set('toJSON', {
     }
 }); 
 
-module.exports =OfferSchema;
+module.exports = OfferSchema;
+//module.exports = mongoose.model('Pitch', PitchSchema);

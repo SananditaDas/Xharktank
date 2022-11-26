@@ -1,10 +1,12 @@
 const PitchModel = require('../models/pitch.model.js');
 const { TimestampComparator } = require('../utils/comparators');
 const { TimestampPrune } = require('../utils/prune');
+const PitchService = require('../services/pitch.service.js');
 
+// Create a pitch with the details
 exports.createPitch = (req, res) => {
     
-    // Create a Pitch
+    // Create pitch model
     const pitch = new PitchModel({
             entrepreneur: req.body.entrepreneur,
             pitchTitle: req.body.pitchTitle,
@@ -13,61 +15,33 @@ exports.createPitch = (req, res) => {
             equity: req.body.equity
     });
 
-
-    // Save Pitch in the database
-    pitch.save()
-    .then(data => {
-        res.status(201).send({ id: data._id });
-    }).catch(err => {
-        //res.send(err);
-        if (err.name === 'ValidationError') {
-            return res.status(400).send({
-                message: "Pitch content incorrect. "
-            });
-        }
-        else {
-            res.status(500).send({
-                message: err.message || "Some error occurred while creating the Pitch."
-            });
-        }
-        
-    });
+    PitchService.createPitch(pitch)
+        .then(pitchId => {
+            res.status(201).send({ id: pitchId });
+        }).catch(err => {
+            res.status(err.errorCode).send(err.errorMessage);
+        });
 };
-
-
 
 // Retrieve and return all pitchs from the database.
 exports.getAllPitches = (req, res) => {
-    PitchModel.find()
+    
+    PitchService.getAllPitches()
         .then(pitches => {
-            pitches.sort(TimestampComparator);
-            _pitches=pitches.map((pitch) => TimestampPrune(pitch));
-            res.send(_pitches);
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || "Some error occurred while retrieving pitches."
+            res.status(200).send(pitches);
+        }).catch(err => {
+            res.status(err.errorCode).send(err.errorMessage);
         });
-    });
+
 };
 
 // Find a single pitch with a pitchId
 exports.getOnePitch = (req, res) => {
-    PitchModel.findById(req.params.pitchId)
-    .then(pitch => {
-        if(!pitch) {
-            return res.status(404).send({
-                message: "Pitch not found with id " + req.params.pitchId
-            });            
-        }
-        res.status(200).send(TimestampPrune(pitch));
-    }).catch(err => {
-        if(err.kind === 'ObjectId') {
-            return res.status(404).send({
-                message: "Pitch not found with id " + req.params.pitchId
-            });                
-        }
-        return res.status(500).send({
-            message: "Error retrieving pitch with id " + req.params.pitchId
+
+    PitchService.getOnePitch(req.params.pitchId)
+        .then(pitch => {
+            res.status(200).send(pitch);
+        }).catch(err => {
+            res.status(err.errorCode).send(err.errorMessage);
         });
-    });
 };

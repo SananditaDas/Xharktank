@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 
-const {DB_URL,PORT,NODE_ENV} = require('./config/environment.config.js');
+const {DB_URL,PORTUSED,NODE_ENV} = require('./config/environment.config.js');
 const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
@@ -38,6 +38,6 @@ app.get('/', (req, res) => {
 require('./app/routes/pitch.routes.js')(app);
 
 // listen for requests
-app.listen(PORT, () => {
+app.listen(PORTUSED, () => {
     console.log("Server is listening on port 8081");
 });

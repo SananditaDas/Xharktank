@@ -1,6 +1,4 @@
 const PitchModel = require('../models/pitch.model.js');
-const { TimestampComparator } = require('../utils/comparators');
-const { TimestampPrune } = require('../utils/prune');
 const PitchService = require('../services/pitch.service.js');
 
 // Create a pitch with the details

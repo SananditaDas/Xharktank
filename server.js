@@ -1,28 +1,18 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const {DB_URL,PORTUSED,NODE_ENV} = require('./config/environment.config.js');
+const mongoose = require('mongoose');
 
 // create express app
 const app = express();
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }))
-
-// parse requests of content-type - application/json
 app.use(bodyParser.json())
 
-
-const {DB_URL,PORTUSED,NODE_ENV} = require('./config/environment.config.js');
-const mongoose = require('mongoose');
-
-mongoose.Promise = global.Promise;
-
-const connectionParams={
-    useNewUrlParser: true,
-    useUnifiedTopology: true 
-}
-
 // Connecting to the database
-mongoose.connect(DB_URL, connectionParams)
+mongoose.Promise = global.Promise;
+mongoose.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         console.log("Successfully connected to the database : "+DB_URL);    
     }).catch(err => {
@@ -30,11 +20,8 @@ mongoose.connect(DB_URL, connectionParams)
         process.exit();
     });
 
-// define a simple route
-app.get('/', (req, res) => {
-    res.json({"message":"Hello World"});
-});
 
+//Connected the routes
 require('./app/routes/pitch.routes.js')(app);
 
 // listen for requests
